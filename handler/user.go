@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"starco/helper"
 	"starco/user"
@@ -91,8 +92,8 @@ func (h *userHandler) CheckEmailAvailibility(c *gin.Context){
 
 	if err != nil{
 		errorMessage := gin.H{"errors": "There is a mistake"}
-		response := helper.APIResponse("Email checking failed", http.StatusUnprocessableEntity, "error", errorMessage)
-		c.JSON(http.StatusUnprocessableEntity, response)
+		response := helper.APIResponse("Email checking failed", http.StatusBadRequest, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -106,7 +107,46 @@ func (h *userHandler) CheckEmailAvailibility(c *gin.Context){
 		metaMessage = "Email is available"
 	}
 
-	response := helper.APIResponse(metaMessage, http.StatusUnprocessableEntity, "error", data)
-	c.JSON(http.StatusUnprocessableEntity, response)
+	response := helper.APIResponse(metaMessage, http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
 	
 }
+
+func (h *userHandler) UploadAvatar(c *gin.Context){
+	file, err := c.FormFile("avatar")
+
+	if err!= nil{
+		data := gin.H{"is_uploaded" : false}
+		response := helper.APIResponse("format wrong, can't upload file", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	
+	userID := 1
+
+	path := fmt.Sprintf("images/%d-%s",userID, file.Filename)
+
+	err = c.SaveUploadedFile(file, path)
+
+	if err!= nil{
+		data := gin.H{"is_uploaded" : false}
+		response := helper.APIResponse("upload file failed", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.userService.SaveAvatar(1, path)
+
+	if err!= nil{
+		data := gin.H{"is_uploaded" : false}
+		response := helper.APIResponse("can't upload file", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	data := gin.H{"is_uploaded" : true}
+		response := helper.APIResponse("file uploaded", http.StatusOK, "success", data)
+		c.JSON(http.StatusOK, response)
+}
+
+
