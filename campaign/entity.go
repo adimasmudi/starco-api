@@ -17,16 +17,16 @@ type Campaign struct {
 	CurrentAmount    int
 	Slug             string
 	CreatedAt        time.Time
-	UpdatetAt time.Time
+	UpdatedAt time.Time
 	User             user.User
 	CampaignImages []CampaignImage
 }
 
 type CampaignImage struct{
 	ID int
-	CampainId int
+	CampaignId int
 	FileName string
 	IsPrimary int
 	CreatedAt        time.Time
-	UpdatetAt time.Time
+	UpdatedAt time.Time
 }
