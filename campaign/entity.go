@@ -1,6 +1,9 @@
 package campaign
 
-import "time"
+import (
+	"starco/user"
+	"time"
+)
 
 type Campaign struct {
 	ID               int
@@ -15,6 +18,7 @@ type Campaign struct {
 	Slug             string
 	CreatedAt        time.Time
 	UpdatetAt time.Time
+	User             user.User
 	CampaignImages []CampaignImage
 }
 
