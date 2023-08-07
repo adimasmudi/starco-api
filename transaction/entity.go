@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"os/user"
 	"starco/campaign"
+	"starco/user"
 	"time"
 
 	"github.com/leekchan/accounting"
@@ -11,7 +11,7 @@ import (
 type Transaction struct {
 	Id         int
 	CampaignId int
-	UserId     int
+	UserId    int
 	Amount     int
 	Status     string
 	Code       string
