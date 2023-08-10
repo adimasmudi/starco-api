@@ -8,6 +8,7 @@ import (
 	"starco/campaign"
 	"starco/handler"
 	"starco/helper"
+	"starco/payment"
 	"starco/transaction"
 	"starco/user"
 	"strings"
@@ -40,7 +41,9 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
+
 
 	authService := auth.NewService()
 
@@ -65,6 +68,7 @@ func main() {
 
 	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUserTransactions)
+	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 
 	router.Run()
 }
